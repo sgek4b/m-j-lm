@@ -1,0 +1,62 @@
+.TH WEBBROWSER 1
+.SH NAME    \" Section header
+.PP
+
+Webbrowser - run the best available browser on this system
+
+.SH SYNOPSIS
+.PP
+.nf 
+.na 
+webbrowser [-h|--help]
+webbrowser [-b|--browsers 'browser list'] [arguments to browser]
+.ad
+.fi
+
+.SH "DESCRIPTION"
+
+.B Webbrowser
+is a shell script that attempts to find and run the best available browser
+from a list, which may be specified on the command line, via the
+environment, or from a built in default list.
+
+.B Webbrowser
+is intended for use from applications that use HTML or other browser-based
+documentation, but cannot depend on a specific browser being installed.
+
+A browser list specified on the command line overrides other lists.  If
+no list is specified on the command line,
+.B webbrowser
+checks the environment variable
+.B BESTBROWSERS.
+If this variable does not exist,
+.B webbrowser
+falls back to a built-in default list.
+
+Additional arguments are passed onto whichever browser is invoked.  It is
+the user's (or calling application's) responsibility to ensure that the
+arguments are appropriate for any browser that might be selected.
+
+.SH OPTIONS
+
+.TP
+.B "-h, --help"
+Display a brief usage synopsis.
+
+.TP
+.B "-b, --browsers 'list'"
+Select from 'list' instead of the default list.  The list must be quoted
+in order to separate it from 'arguments'.
+
+.SH ENVIRONMENT
+.nf
+.na
+$BESTBROWSERS
+.ad
+.fi
+
+.SH AUTHOR
+.nf
+.na
+Jason W. Bacon
+

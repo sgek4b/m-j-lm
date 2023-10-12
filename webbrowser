@@ -1,0 +1,64 @@
+#!/bin/sh -e
+
+case $# in
+0)
+    url=''
+    ;;
+
+*)
+    case $1 in
+    "-h"|"--help")
+	echo "Usage: $0 [-h|--help]"
+	echo "       $0 [-b|--browsers 'browser-list'] [url]"
+	echo "NOTE: browser-list must be quoted to separate it from url"
+	echo ""
+	echo "Example:"
+	echo "  $0 -b 'konqueror ephipany lynx' http://www.google.com"
+	exit 0
+	;;
+
+    "-b"|"--browsers")
+	browsers="$2"
+	url="$3"
+	;;
+    
+    *)
+	url="$1"
+	;;
+    esac
+esac
+
+# If no browser list given on the command line, check the env
+if [ -z "$browsers" ]; then
+    if [ -n "$BESTBROWSERS" ]; then
+	browsers="$BESTBROWSERS"
+    else
+	# The order of the browsers here is an attempt to rank them in order
+	# of most likely to be an add-on.  The idea is to use the browser that
+	# a user chose to install over those included with the base system.
+	browsers="opera firefox chrome konqueror epiphany Safari elinks w3m links"
+	if [ `uname` = 'Darwin' ]; then
+	    # Mac OS X has an 'open' command that runs the default app
+	    # for a given argument.
+	    browsers="open $browsers"
+	fi
+    fi
+fi
+
+# Find a browser from the list
+for browser in $browsers; do
+    if which $browser > /dev/null 2>&1; then
+	echo $browser "${url}"
+	$browser "${url}"
+	exit $?
+    fi
+done
+
+# Didn't find anything...
+echo "None of the following browsers were found on this system:"
+echo ""
+echo "$browsers"
+echo ""
+echo "Make sure at least on of these browsers is installed and your PATH is"
+echo "properly configured."
+exit 1
